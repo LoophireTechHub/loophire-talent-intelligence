@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hiring Reality | Loophire</title>
+  <link rel="icon" type="image/svg+xml" href="https://loophire.com/wp-content/uploads/2023/06/loophire-logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+    :root {
+      --navy: #1c223c;
+      --coral: #de635e;
+      --teal: #2a615e;
+      --beige: #eee1ce;
+      --off-white: #f8f7f5;
+      --white: #ffffff;
+      --gray-light: #959db2;
+      --gray-medium: #6b7280;
+      --gray-dark: #4a5568;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --purple: #7c3aed;
+      --shadow-sm: 0 2px 8px rgba(28, 34, 60, 0.06);
+      --shadow-md: 0 4px 12px rgba(28, 34, 60, 0.08);
+      --shadow-lg: 0 8px 24px rgba(28, 34, 60, 0.12);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--off-white);
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    .page-wrapper { display: flex; min-height: 100vh; }
+    .main-content { flex: 1; padding: 32px 40px; margin-left: 260px; max-width: 1400px; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--navy);
+      color: var(--white);
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px; }
+    .sidebar-logo .logo-text { font-size: 1.5rem; font-weight: 700; }
+    .sidebar-logo .logo-text span { color: var(--coral); }
+    .sidebar-logo .logo-subtitle { font-size: 0.75rem; color: var(--gray-light); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar-nav { flex: 1; padding: 0 12px; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--gray-light);
+      border-radius: var(--radius-md);
+      margin-bottom: 4px;
+      transition: var(--transition);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+    .nav-item.active { background: var(--teal); color: var(--white); }
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .nav-badge { margin-left: auto; padding: 2px 8px; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 600; background: var(--coral); color: var(--white); }
+    .sidebar-footer { padding: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .tier-badge { background: var(--coral); color: var(--white); padding: 8px 16px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+    .sidebar-footer .tier-name { font-weight: 600; }
+    .sidebar-footer .tier-price { font-size: 0.875rem; color: var(--gray-light); }
+    .upgrade-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--coral); margin-top: 12px; text-decoration: none; }
+    .upgrade-link:hover { color: var(--white); }
+
+    /* Header */
+    .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; }
+    .page-subtitle { color: var(--gray-medium); margin-top: 2px; font-size: 0.9rem; }
+    .user-menu { display: flex; align-items: center; gap: 16px; }
+    .user-avatar { width: 40px; height: 40px; background: var(--teal); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+    .user-info { text-align: right; }
+    .user-name { font-weight: 600; font-size: 0.85rem; }
+    .user-role { font-size: 0.75rem; color: var(--gray-medium); }
+
+    /* SECTION 1: Reality Snapshot */
+    .reality-snapshot {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .reality-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .reality-headline { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.2rem; font-weight: 700; color: var(--navy); line-height: 1.4; max-width: 500px; }
+    .reality-headline span { color: var(--coral); }
+    .confidence-meter { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: rgba(5, 150, 105, 0.08); border-radius: var(--radius-full); }
+    .confidence-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; }
+    .confidence-text { font-size: 0.75rem; font-weight: 600; color: var(--success); }
+    .confidence-subtext { font-size: 0.65rem; color: var(--gray-medium); margin-left: 4px; }
+    .reality-pills { display: flex; gap: 16px; flex-wrap: wrap; }
+    .reality-pill {
+      background: var(--off-white);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      min-width: 160px;
+      border-left: 4px solid transparent;
+      flex: 1;
+    }
+    .reality-pill.primary {
+      min-width: 200px;
+      flex: 1.3;
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.08), rgba(217, 119, 6, 0.15));
+      border: 2px solid rgba(217, 119, 6, 0.2);
+      position: relative;
+    }
+    .reality-pill.primary::before {
+      content: 'Primary Risk';
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      background: var(--warning);
+      color: var(--white);
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .reality-pill.yellow { border-left-color: var(--warning); }
+    .reality-pill.orange { border-left-color: #ea580c; }
+    .reality-pill.red { border-left-color: var(--danger); }
+    .reality-pill.purple { border-left-color: var(--purple); }
+    .reality-pill.green { border-left-color: var(--success); }
+    .pill-value { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 2px; }
+    .reality-pill.primary .pill-value { font-size: 1.4rem; }
+    .pill-value.yellow { color: var(--warning); }
+    .pill-value.orange { color: #ea580c; }
+    .pill-value.red { color: var(--danger); }
+    .pill-value.purple { color: var(--purple); }
+    .pill-value.green { color: var(--success); }
+    .pill-label { font-size: 0.75rem; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+    .pill-subtext { font-size: 0.7rem; color: var(--gray-medium); line-height: 1.3; }
+    .pill-worst { font-size: 0.7rem; color: var(--danger); font-weight: 600; margin-top: 6px; }
+
+    /* SECTION 2: Executive Action Card */
+    .action-card {
+      background: linear-gradient(135deg, var(--navy) 0%, #2a3352 100%);
+      border-radius: var(--radius-xl);
+      padding: 28px 32px;
+      color: var(--white);
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+      align-items: start;
+    }
+    .action-insights h3 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; opacity: 0.9; }
+    .action-insights ul { list-style: none; }
+    .action-insights li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+    .action-insights li:last-child { border-bottom: none; }
+    .action-insights li svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; color: var(--coral); }
+    .action-box {
+      background: rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .action-box-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; margin-bottom: 8px; }
+    .action-box h4 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+    .action-box p { font-size: 0.8rem; opacity: 0.85; margin-bottom: 16px; line-height: 1.5; }
+    .action-box .btn { width: 100%; justify-content: center; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: var(--radius-md); font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; transition: var(--transition); text-decoration: none; }
+    .btn svg { width: 16px; height: 16px; }
+    .btn-white { background: var(--white); color: var(--navy); }
+    .btn-white:hover { background: var(--beige); }
+    .btn-primary { background: var(--teal); color: var(--white); }
+    .btn-primary:hover { background: #1e4a47; }
+    .btn-coral { background: var(--coral); color: var(--white); }
+    .btn-coral:hover { background: #c4524d; }
+    .btn-outline { background: transparent; border: 2px solid var(--beige); color: var(--navy); }
+    .btn-outline:hover { border-color: var(--navy); }
+    .btn-sm { padding: 8px 14px; font-size: 0.8rem; }
+
+    /* SECTION 3: Role Risk Table */
+    .risk-section {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .risk-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .risk-header h3 { font-size: 1rem; font-weight: 600; }
+    .risk-table { width: 100%; border-collapse: collapse; }
+    .risk-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-medium);
+      background: var(--off-white);
+      border-radius: var(--radius-sm);
+    }
+    .risk-table th:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+    .risk-table th:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .risk-table td {
+      padding: 16px;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--beige);
+      vertical-align: middle;
+    }
+    .risk-table tr:last-child td { border-bottom: none; }
+    .role-cell { font-weight: 600; }
+    .location-cell { color: var(--gray-medium); font-size: 0.8rem; }
+    .feasibility-score {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .feasibility-score.hard { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+    .feasibility-score.moderate { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+    .feasibility-score.easy { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+    .gap-cell { font-weight: 600; }
+    .gap-cell.negative { color: var(--danger); }
+    .gap-cell.positive { color: var(--success); }
+    .gap-cell.neutral { color: var(--gray-medium); }
+    .time-cell { font-size: 0.8rem; }
+    .time-cell .current { font-weight: 600; color: var(--navy); }
+    .time-cell .avg { color: var(--gray-medium); }
+    .status-tag {
+      display: inline-flex;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .status-tag.underpriced { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
+    .status-tag.competitive { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+    .status-tag.at-risk { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+    .status-tag.stalled { background: rgba(124, 58, 237, 0.1); color: var(--purple); }
+    .view-link { color: var(--teal); font-weight: 600; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+    .view-link:hover { color: var(--navy); }
+    .view-link svg { width: 14px; height: 14px; }
+
+    /* SECTION 4: Split Cards */
+    .split-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .split-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 24px;
+    }
+    .split-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .split-card-header h4 { font-size: 1rem; font-weight: 600; }
+
+    /* Comp Reality */
+    .comp-visual { margin-bottom: 20px; }
+    .comp-bar-container { position: relative; height: 12px; background: var(--beige); border-radius: var(--radius-full); margin: 16px 0; }
+    .comp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--danger), var(--warning), var(--success)); border-radius: var(--radius-full); width: 100%; }
+    .comp-marker {
+      position: absolute;
+      top: -6px;
+      width: 24px;
+      height: 24px;
+      background: var(--white);
+      border: 3px solid var(--navy);
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+    .comp-marker.your-pay { left: 35%; }
+    .comp-marker.ghost {
+      left: 50%;
+      background: transparent;
+      border: 3px dashed var(--success);
+      opacity: 0.6;
+    }
+    .comp-marker-label {
+      position: absolute;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.6rem;
+      color: var(--success);
+      white-space: nowrap;
+    }
+    .comp-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--gray-medium); }
+    .comp-insight { font-size: 0.85rem; color: var(--navy); font-weight: 500; margin-bottom: 12px; line-height: 1.5; }
+    .comp-insight strong { color: var(--coral); }
+    .comp-stat { text-align: center; padding: 16px; background: var(--off-white); border-radius: var(--radius-md); }
+    .comp-stat-value { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.5rem; font-weight: 700; color: var(--coral); }
+    .comp-stat-label { font-size: 0.75rem; color: var(--gray-medium); margin-top: 4px; }
+
+    /* Competitor Activity */
+    .competitor-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--beige);
+    }
+    .competitor-item:last-child { border-bottom: none; }
+    .competitor-name { font-weight: 500; font-size: 0.9rem; }
+    .competitor-status { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+    .competitor-status.accelerating { color: var(--danger); }
+    .competitor-status.stable { color: var(--warning); }
+    .competitor-status.cooling { color: var(--success); }
+    .competitor-status svg { width: 14px; height: 14px; }
+    .competitor-implication { font-size: 0.75rem; color: var(--gray-medium); font-style: italic; padding: 12px 0 0; margin-top: 8px; border-top: 1px solid var(--beige); }
+
+    /* SECTION 5: Retention & Pipeline */
+    .retention-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .retention-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 24px;
+    }
+    .retention-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .retention-card-header h4 { font-size: 1rem; font-weight: 600; }
+    .retention-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .retention-stat { text-align: center; padding: 12px; background: var(--off-white); border-radius: var(--radius-md); }
+    .retention-stat-value { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.25rem; font-weight: 700; }
+    .retention-stat-value.danger { color: var(--danger); }
+    .retention-stat-value.warning { color: var(--warning); }
+    .retention-stat-value.navy { color: var(--navy); }
+    .retention-stat-label { font-size: 0.7rem; color: var(--gray-medium); margin-top: 2px; }
+
+    /* Pipeline Health */
+    .pipeline-bar { display: flex; height: 32px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 12px; }
+    .pipeline-segment { display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; color: var(--white); }
+    .pipeline-segment.junior { background: var(--teal); flex: 2; }
+    .pipeline-segment.mid { background: var(--navy); flex: 5; }
+    .pipeline-segment.senior { background: var(--coral); flex: 3; }
+    .pipeline-legend { display: flex; gap: 16px; justify-content: center; margin-bottom: 12px; }
+    .pipeline-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--gray-medium); }
+    .pipeline-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+    .pipeline-legend-dot.junior { background: var(--teal); }
+    .pipeline-legend-dot.mid { background: var(--navy); }
+    .pipeline-legend-dot.senior { background: var(--coral); }
+    .pipeline-warning { display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(217, 119, 6, 0.1); border-radius: var(--radius-md); font-size: 0.8rem; color: var(--warning); }
+    .pipeline-warning svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* SECTION 6: Tool Launcher */
+    .tools-section { margin-bottom: 32px; }
+    .tools-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .tools-header h3 { font-size: 1rem; font-weight: 600; color: var(--gray-dark); }
+    .tools-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .tool-card-mini {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      border: 2px solid transparent;
+    }
+    .tool-card-mini:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--teal); }
+    .tool-mini-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .tool-mini-icon svg { width: 22px; height: 22px; }
+    .tool-mini-icon.teal { background: rgba(42, 97, 94, 0.1); color: var(--teal); }
+    .tool-mini-icon.navy { background: rgba(28, 34, 60, 0.08); color: var(--navy); }
+    .tool-mini-icon.warning { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+    .tool-mini-icon.coral { background: rgba(222, 99, 94, 0.1); color: var(--coral); }
+    .tool-mini-icon.purple { background: rgba(124, 58, 237, 0.1); color: var(--purple); }
+    .tool-mini-name { font-size: 0.8rem; font-weight: 600; color: var(--navy); }
+
+    /* CTA Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--coral) 0%, #c4524d 100%);
+      border-radius: var(--radius-xl);
+      padding: 24px 28px;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .cta-content h4 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .cta-content p { font-size: 0.85rem; opacity: 0.9; }
+    .cta-banner .btn { background: var(--white); color: var(--coral); }
+
+    footer { padding-top: 20px; border-top: 1px solid var(--beige); text-align: center; font-size: 0.75rem; color: var(--gray-medium); }
+    footer a { color: var(--teal); text-decoration: none; }
+
+    @media (max-width: 1200px) {
+      .action-card { grid-template-columns: 1fr; }
+      .split-section { grid-template-columns: 1fr; }
+      .retention-section { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: repeat(3, 1fr); }
+      .reality-snapshot { flex-direction: column; align-items: stretch; }
+      .reality-pills { justify-content: space-between; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 20px; }
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
+      .reality-pills { flex-direction: column; }
+      .reality-pill { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-text">Loop<span>hire</span></div>
+        <div class="logo-subtitle">Hiring Intelligence</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Hiring Reality
+        </a>
+        <a href="file:///Users/loophire/Downloads/loophire-comp-benchmarking-tool.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Comp Benchmarking
+        </a>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+          Hire Feasibility
+        </a>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Retention Radar
+          <span class="nav-badge">2</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          Role Tracker
+          <span class="nav-badge">1</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Competitor Intel
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="tier-badge">Advantage</div>
+        <div class="tier-name">Demo Insurance Agency</div>
+        <div class="tier-price">$597/mo</div>
+        <a href="#" class="upgrade-link">Upgrade to Partner</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="top-header">
+        <div>
+          <h1 class="page-title">Hiring Reality</h1>
+          <p class="page-subtitle">Demo Insurance Agency &bull; Phoenix Metro</p>
+        </div>
+        <div class="user-menu">
+          <div class="user-info">
+            <div class="user-name">John Smith</div>
+            <div class="user-role">Updated just now</div>
+          </div>
+          <div class="user-avatar">JS</div>
+        </div>
+      </header>
+
+      <!-- SECTION 1: Reality Snapshot -->
+      <div class="reality-snapshot">
+        <div class="reality-top">
+          <div class="reality-headline">
+            Your biggest hiring risk this month is <span>underpriced senior roles</span> in Phoenix.
+          </div>
+          <div class="confidence-meter">
+            <div class="confidence-dot"></div>
+            <span class="confidence-text">Data Confidence: High</span>
+            <span class="confidence-subtext">Live market data</span>
+          </div>
+        </div>
+        <div class="reality-pills">
+          <div class="reality-pill primary yellow">
+            <div class="pill-label">Hire Feasibility</div>
+            <div class="pill-value yellow">Moderate Risk</div>
+            <div class="pill-subtext">2 roles flagged as hard to fill</div>
+            <div class="pill-worst">Worst: Commercial Producer (82)</div>
+          </div>
+          <div class="reality-pill orange">
+            <div class="pill-label">Cost Pressure</div>
+            <div class="pill-value orange">+12%</div>
+            <div class="pill-subtext">Market rates rising faster than budget</div>
+          </div>
+          <div class="reality-pill red">
+            <div class="pill-label">Talent Scarcity</div>
+            <div class="pill-value red">2.4 : 1</div>
+            <div class="pill-subtext">Candidates to open roles ratio</div>
+          </div>
+          <div class="reality-pill purple">
+            <div class="pill-label">Market Direction</div>
+            <div class="pill-value purple">Tightening</div>
+            <div class="pill-subtext">Competition increasing in key roles</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Executive Action Card -->
+      <div class="action-card">
+        <div class="action-insights">
+          <h3>What You Should Know This Week</h3>
+          <ul>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span><strong>Sr. Account Manager</strong> role in Phoenix is underpriced by ~15% vs. market median</span>
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              <span><strong>Commercial Producer</strong> market tightened 8% in last 30 days — expect longer time-to-fill</span>
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+              <span><strong>Retention risk increasing</strong> for 2 top performers currently at market median comp</span>
+            </li>
+          </ul>
+        </div>
+        <div class="action-box">
+          <div class="action-box-label">Recommended Action</div>
+          <h4>Increase comp or shift role location</h4>
+          <p>Raising base pay by 10% on Sr. Account Manager unlocks ~31% more talent in Phoenix market.</p>
+          <a href="#" class="btn btn-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            View Affected Roles
+          </a>
+        </div>
+      </div>
+
+      <!-- SECTION 3: Role Risk Table -->
+      <div class="risk-section">
+        <div class="risk-header">
+          <h3>Roles at Risk</h3>
+          <a href="#" class="btn btn-outline btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+            Analyze New Role
+          </a>
+        </div>
+        <table class="risk-table">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Location</th>
+              <th>Hire Feasibility</th>
+              <th>Salary Gap</th>
+              <th>Time-to-Fill</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="role-cell">Sr. Account Manager</td>
+              <td class="location-cell">Phoenix, AZ</td>
+              <td><span class="feasibility-score hard">Hard (68)</span></td>
+              <td class="gap-cell negative">-15%</td>
+              <td class="time-cell"><span class="current">24d</span> / <span class="avg">28d avg</span></td>
+              <td><span class="status-tag underpriced">Underpriced</span></td>
+              <td><a href="#" class="view-link">View Intel <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a></td>
+            </tr>
+            <tr>
+              <td class="role-cell">Commercial Producer</td>
+              <td class="location-cell">Scottsdale, AZ</td>
+              <td><span class="feasibility-score hard">Very Hard (82)</span></td>
+              <td class="gap-cell positive">+5%</td>
+              <td class="time-cell"><span class="current">8d</span> / <span class="avg">35d avg</span></td>
+              <td><span class="status-tag competitive">Competitive</span></td>
+              <td><a href="#" class="view-link">View Intel <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a></td>
+            </tr>
+            <tr>
+              <td class="role-cell">CSR - Commercial Lines</td>
+              <td class="location-cell">Phoenix, AZ</td>
+              <td><span class="feasibility-score easy">Easy (34)</span></td>
+              <td class="gap-cell neutral">0%</td>
+              <td class="time-cell"><span class="current">31d</span> / <span class="avg">18d avg</span></td>
+              <td><span class="status-tag stalled">Stalled</span></td>
+              <td><a href="#" class="view-link">View Intel <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SECTION 4: Split Cards -->
+      <div class="split-section">
+        <!-- Compensation Reality -->
+        <div class="split-card">
+          <div class="split-card-header">
+            <h4>Compensation Pressure</h4>
+            <a href="file:///Users/loophire/Downloads/loophire-comp-benchmarking-tool.html" class="btn btn-outline btn-sm">Run Benchmark</a>
+          </div>
+          <p class="comp-insight">At your current pay, you are competing for the <strong>top 22%</strong> of available talent.</p>
+          <div class="comp-visual">
+            <div class="comp-bar-container">
+              <div class="comp-bar-fill"></div>
+              <div class="comp-marker your-pay" title="Your Average Pay"></div>
+              <div class="comp-marker ghost" title="+10% Pay"></div>
+              <div class="comp-marker-label">+10% = 53% access</div>
+            </div>
+            <div class="comp-labels">
+              <span>Below Market</span>
+              <span>Market Median</span>
+              <span>Premium</span>
+            </div>
+          </div>
+          <div class="comp-stat">
+            <div class="comp-stat-value">+31%</div>
+            <div class="comp-stat-label">more talent unlocked with 10% pay increase</div>
+          </div>
+        </div>
+
+        <!-- Competitor Activity -->
+        <div class="split-card">
+          <div class="split-card-header">
+            <h4>Competitive Hiring Activity</h4>
+            <a href="#" class="btn btn-outline btn-sm">View Intel</a>
+          </div>
+          <div class="competitor-item">
+            <span class="competitor-name">ABC Insurance Group</span>
+            <span class="competitor-status accelerating">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              Accelerating
+            </span>
+          </div>
+          <div class="competitor-item">
+            <span class="competitor-name">Southwest Risk Partners</span>
+            <span class="competitor-status stable">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Stable
+            </span>
+          </div>
+          <div class="competitor-item">
+            <span class="competitor-name">Valley Commercial Insurance</span>
+            <span class="competitor-status cooling">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/></svg>
+              Cooling
+            </span>
+          </div>
+          <p class="competitor-implication">Accelerating competitors are likely increasing offer pressure in your market.</p>
+        </div>
+      </div>
+
+      <!-- SECTION 5: Retention & Pipeline -->
+      <div class="retention-section">
+        <!-- Retention Radar Summary -->
+        <div class="retention-card">
+          <div class="retention-card-header">
+            <h4>Retention Risk Summary</h4>
+            <a href="#" class="btn btn-outline btn-sm">View Radar</a>
+          </div>
+          <div class="retention-stats">
+            <div class="retention-stat">
+              <div class="retention-stat-value danger">2</div>
+              <div class="retention-stat-label">High-Risk</div>
+            </div>
+            <div class="retention-stat">
+              <div class="retention-stat-value warning">78d</div>
+              <div class="retention-stat-label">Est. Backfill Time</div>
+            </div>
+            <div class="retention-stat">
+              <div class="retention-stat-value navy">$142K</div>
+              <div class="retention-stat-label">Replacement Cost</div>
+            </div>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--navy); line-height: 1.5; font-weight: 500;">If attrition occurs, estimated <strong style="color: var(--danger);">78 days</strong> to backfill critical roles.</p>
+          <p style="font-size: 0.75rem; color: var(--gray-medium); line-height: 1.4; margin-top: 8px;">Sarah M. (Sr. Account Mgr) and Mike T. (Commercial Producer) approaching 24-month tenure risk window with comp at market median.</p>
+        </div>
+
+        <!-- Workforce Stability -->
+        <div class="retention-card">
+          <div class="retention-card-header">
+            <h4>Workforce Stability</h4>
+            <a href="#" class="btn btn-outline btn-sm">Adjust Strategy</a>
+          </div>
+          <div class="pipeline-bar">
+            <div class="pipeline-segment junior">20%</div>
+            <div class="pipeline-segment mid">50%</div>
+            <div class="pipeline-segment senior">30%</div>
+          </div>
+          <div class="pipeline-legend">
+            <div class="pipeline-legend-item"><div class="pipeline-legend-dot junior"></div> Junior</div>
+            <div class="pipeline-legend-item"><div class="pipeline-legend-dot mid"></div> Mid-Level</div>
+            <div class="pipeline-legend-item"><div class="pipeline-legend-dot senior"></div> Senior</div>
+          </div>
+          <div class="pipeline-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Senior-heavy market — consider leveling adjustment for faster fills</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Banner -->
+      <div class="cta-banner">
+        <div class="cta-content">
+          <h4>Need recruiting support on a stalled role?</h4>
+          <p>Our team delivers qualified candidates with 97.6% retention guarantee.</p>
+        </div>
+        <a href="#" class="btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Talk to a Recruiter
+        </a>
+      </div>
+
+      <!-- SECTION 6: Tool Launcher -->
+      <div class="tools-section">
+        <div class="tools-header">
+          <h3>Intelligence Tools</h3>
+        </div>
+        <div class="tools-grid">
+          <a href="file:///Users/loophire/Downloads/loophire-comp-benchmarking-tool.html" class="tool-card-mini">
+            <div class="tool-mini-icon teal">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="tool-mini-name">Comp Benchmark</div>
+          </a>
+          <a href="#" class="tool-card-mini">
+            <div class="tool-mini-icon navy">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+            </div>
+            <div class="tool-mini-name">Hire Feasibility</div>
+          </a>
+          <a href="#" class="tool-card-mini">
+            <div class="tool-mini-icon warning">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div class="tool-mini-name">Retention Radar</div>
+          </a>
+          <a href="#" class="tool-card-mini">
+            <div class="tool-mini-icon coral">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            </div>
+            <div class="tool-mini-name">Role Tracker</div>
+          </a>
+          <a href="#" class="tool-card-mini">
+            <div class="tool-mini-icon purple">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="tool-mini-name">Competitor Intel</div>
+          </a>
+        </div>
+      </div>
+
+      <footer>
+        Loophire Hiring Intelligence &bull; Advantage Tier &bull; <a href="https://loophire.com" target="_blank">loophire.com</a>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

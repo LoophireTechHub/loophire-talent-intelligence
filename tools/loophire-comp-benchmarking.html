@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comp Benchmarking - Commercial Lines Producer | Loophire</title>
+  <link rel="icon" type="image/svg+xml" href="https://loophire.com/wp-content/uploads/2023/06/loophire-logo.svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+    :root {
+      --navy: #1c223c;
+      --coral: #de635e;
+      --teal: #2a615e;
+      --beige: #eee1ce;
+      --off-white: #f8f7f5;
+      --white: #ffffff;
+      --gray-light: #959db2;
+      --gray-medium: #6b7280;
+      --gray-dark: #4a5568;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --purple: #7c3aed;
+      --shadow-md: 0 4px 12px rgba(28, 34, 60, 0.08);
+      --shadow-lg: 0 8px 24px rgba(28, 34, 60, 0.12);
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--off-white);
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    .page-wrapper { display: flex; min-height: 100vh; }
+    .main-content { flex: 1; padding: 32px 48px; margin-left: 260px; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--navy);
+      color: var(--white);
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px; }
+    .sidebar-logo .logo-text { font-size: 1.5rem; font-weight: 700; }
+    .sidebar-logo .logo-text span { color: var(--coral); }
+    .sidebar-logo .logo-subtitle { font-size: 0.75rem; color: var(--gray-light); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar-nav { flex: 1; padding: 0 12px; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--gray-light);
+      border-radius: var(--radius-md);
+      margin-bottom: 4px;
+      transition: var(--transition);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+    .nav-item.active { background: var(--teal); color: var(--white); }
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .sidebar-footer { padding: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .tier-badge { background: var(--coral); color: var(--white); padding: 8px 16px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+    .sidebar-footer .tier-name { font-weight: 600; }
+    .sidebar-footer .tier-price { font-size: 0.875rem; color: var(--gray-light); }
+
+    /* Header */
+    .tool-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--gray-medium); text-decoration: none; font-size: 0.875rem; margin-bottom: 8px; }
+    .back-link:hover { color: var(--navy); }
+    .back-link svg { width: 18px; height: 18px; }
+    .tool-title-area { display: flex; align-items: center; gap: 16px; }
+    .tool-icon { width: 56px; height: 56px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--teal), #1e4a47); color: var(--white); }
+    .tool-icon svg { width: 28px; height: 28px; }
+    .page-title { font-size: 1.75rem; font-weight: 700; }
+    .page-subtitle { color: var(--gray-medium); margin-top: 4px; font-size: 0.9rem; }
+
+    /* Badges */
+    .badge { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+    .badge-success { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+    .badge-warning { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+    .badge-teal { background: rgba(42, 97, 94, 0.1); color: var(--teal); }
+    .badge-coral { background: rgba(222, 99, 94, 0.1); color: var(--coral); }
+
+    .confidence-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(5, 150, 105, 0.1); border-radius: var(--radius-full); font-size: 0.8rem; color: var(--success); font-weight: 500; }
+    .confidence-badge svg { width: 16px; height: 16px; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: var(--radius-md); font-weight: 600; font-size: 0.875rem; border: none; cursor: pointer; transition: var(--transition); text-decoration: none; }
+    .btn svg { width: 18px; height: 18px; }
+    .btn-primary { background: var(--teal); color: var(--white); }
+    .btn-primary:hover { background: #1e4a47; }
+    .btn-secondary { background: var(--white); color: var(--navy); border: 2px solid var(--beige); }
+    .btn-secondary:hover { border-color: var(--navy); }
+    .btn-coral { background: var(--coral); color: var(--white); }
+    .btn-coral:hover { background: #c4524d; }
+
+    /* Form Controls */
+    .form-section { background: var(--white); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); padding: 28px; margin-bottom: 24px; }
+    .form-section-title { font-size: 1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .form-section-title svg { width: 20px; height: 20px; color: var(--teal); }
+
+    .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full-width { grid-column: span 3; }
+    .form-label { font-size: 0.8rem; font-weight: 600; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-input, .form-select {
+      padding: 12px 16px;
+      border: 2px solid var(--beige);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: var(--transition);
+      background: var(--white);
+    }
+    .form-input:focus, .form-select:focus { outline: none; border-color: var(--teal); }
+    .form-select { cursor: pointer; }
+    .form-hint { font-size: 0.75rem; color: var(--gray-medium); }
+
+    /* Search Input */
+    .search-input-wrapper { position: relative; }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--gray-medium); pointer-events: none; }
+    .search-input { padding-left: 48px !important; font-size: 1.1rem !important; font-weight: 500; }
+    .search-input::placeholder { color: var(--gray-light); font-weight: 400; }
+    .search-suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .suggestion-chip {
+      padding: 6px 14px;
+      background: var(--off-white);
+      border: 1px solid var(--beige);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      color: var(--gray-dark);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .suggestion-chip:hover { background: var(--beige); border-color: var(--gray-light); color: var(--navy); }
+
+    /* Radio Cards */
+    .radio-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .radio-card {
+      padding: 20px;
+      border: 2px solid var(--beige);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+    .radio-card:hover { border-color: var(--gray-light); }
+    .radio-card.selected { border-color: var(--teal); background: rgba(42, 97, 94, 0.03); }
+    .radio-card-title { font-weight: 600; margin-bottom: 4px; }
+    .radio-card-desc { font-size: 0.8rem; color: var(--gray-medium); }
+    .radio-card input { position: absolute; opacity: 0; }
+    .radio-card .check-icon {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: var(--white);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .radio-card.selected .check-icon { display: flex; }
+    .radio-card .check-icon svg { width: 14px; height: 14px; }
+
+    /* Toggle */
+    .toggle-group { display: flex; gap: 8px; background: var(--off-white); padding: 4px; border-radius: var(--radius-md); }
+    .toggle-btn {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .toggle-btn.active { background: var(--white); box-shadow: var(--shadow-md); color: var(--navy); }
+
+    /* Results Section */
+    .results-section { display: none; }
+    .results-section.visible { display: block; }
+
+    .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .results-title { font-size: 1.25rem; font-weight: 700; }
+    .results-actions { display: flex; gap: 12px; }
+
+    /* Comp Summary Card */
+    .comp-summary {
+      background: linear-gradient(135deg, var(--navy) 0%, #2a3352 100%);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    .comp-summary-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .comp-summary-title { font-size: 1rem; opacity: 0.8; margin-bottom: 8px; }
+    .comp-summary-role { font-size: 1.5rem; font-weight: 700; }
+    .comp-summary-meta { display: flex; gap: 16px; margin-top: 8px; font-size: 0.85rem; opacity: 0.7; }
+
+    .comp-range { display: flex; align-items: flex-end; gap: 40px; }
+    .comp-range-item { text-align: center; }
+    .comp-range-label { font-size: 0.75rem; opacity: 0.7; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .comp-range-value { font-family: 'Libre Baskerville', Georgia, serif; font-size: 2rem; font-weight: 700; }
+    .comp-range-item.highlight .comp-range-value { color: var(--coral); font-size: 2.5rem; }
+    .comp-range-item.highlight { position: relative; }
+    .comp-range-item.highlight::before {
+      content: 'Market Rate';
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--coral);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* Visual Range Bar */
+    .comp-visual-bar { margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .range-bar-container { position: relative; height: 24px; background: rgba(255,255,255,0.1); border-radius: var(--radius-full); margin: 20px 0 40px; }
+    .range-bar-fill { position: absolute; height: 100%; background: linear-gradient(90deg, rgba(222, 99, 94, 0.3), var(--coral), rgba(222, 99, 94, 0.3)); border-radius: var(--radius-full); left: 15%; width: 70%; }
+    .range-marker { position: absolute; top: -8px; width: 4px; height: 40px; background: var(--white); border-radius: 2px; }
+    .range-marker.p25 { left: 25%; }
+    .range-marker.p50 { left: 50%; height: 48px; top: -12px; width: 6px; }
+    .range-marker.p75 { left: 75%; }
+    .range-labels { display: flex; justify-content: space-between; font-size: 0.75rem; opacity: 0.7; }
+
+    /* Comp Breakdown Grid */
+    .comp-breakdown { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 24px; }
+
+    .breakdown-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 24px;
+    }
+    .breakdown-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .breakdown-card-title { font-weight: 600; font-size: 1rem; }
+
+    .breakdown-table { width: 100%; }
+    .breakdown-table tr { border-bottom: 1px solid var(--beige); }
+    .breakdown-table tr:last-child { border-bottom: none; }
+    .breakdown-table td { padding: 12px 0; font-size: 0.9rem; }
+    .breakdown-table td:first-child { color: var(--gray-medium); }
+    .breakdown-table td:last-child { text-align: right; font-weight: 600; }
+    .breakdown-table .highlight td { color: var(--teal); font-weight: 600; }
+
+    /* Timeline Card */
+    .timeline-card { grid-column: span 2; }
+    .timeline-visual { display: flex; align-items: stretch; gap: 0; margin: 20px 0; }
+    .timeline-phase {
+      flex: 1;
+      padding: 16px;
+      background: var(--off-white);
+      position: relative;
+      text-align: center;
+    }
+    .timeline-phase:first-child { border-radius: var(--radius-lg) 0 0 var(--radius-lg); }
+    .timeline-phase:last-child { border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+    .timeline-phase::after {
+      content: '';
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 10px solid var(--off-white);
+      z-index: 1;
+    }
+    .timeline-phase:last-child::after { display: none; }
+    .timeline-phase.active { background: rgba(42, 97, 94, 0.1); }
+    .timeline-phase.active::after { border-left-color: rgba(42, 97, 94, 0.1); }
+    .timeline-phase-label { font-size: 0.7rem; text-transform: uppercase; color: var(--gray-medium); margin-bottom: 4px; }
+    .timeline-phase-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+    .timeline-phase-detail { font-size: 0.75rem; color: var(--gray-medium); }
+    .timeline-phase-value { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.25rem; font-weight: 700; color: var(--navy); margin-top: 8px; }
+
+    /* Insights Card */
+    .insights-card { background: var(--white); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); padding: 24px; margin-bottom: 24px; }
+    .insights-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .insights-card-title { font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+    .insights-card-title svg { width: 20px; height: 20px; color: var(--purple); }
+
+    .insight-item { display: flex; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--beige); }
+    .insight-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .insight-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .insight-icon.success { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+    .insight-icon.warning { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+    .insight-icon.info { background: rgba(42, 97, 94, 0.1); color: var(--teal); }
+    .insight-icon svg { width: 20px; height: 20px; }
+    .insight-content { flex: 1; }
+    .insight-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+    .insight-desc { font-size: 0.8rem; color: var(--gray-medium); line-height: 1.5; }
+
+    /* CTA Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--coral) 0%, #c4524d 100%);
+      border-radius: var(--radius-xl);
+      padding: 28px 32px;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .cta-content { flex: 1; }
+    .cta-title { font-size: 1.125rem; font-weight: 700; margin-bottom: 4px; }
+    .cta-desc { font-size: 0.9rem; opacity: 0.9; }
+    .cta-banner .btn { background: var(--white); color: var(--coral); }
+
+    /* Data Source Footer */
+    .data-source { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px; margin-top: 32px; border-top: 1px solid var(--beige); font-size: 0.8rem; color: var(--gray-medium); }
+    .data-source-item { display: flex; align-items: center; gap: 6px; }
+    .data-source-item svg { width: 16px; height: 16px; }
+
+    @media (max-width: 1200px) {
+      .form-grid { grid-template-columns: repeat(2, 1fr); }
+      .form-group.full-width { grid-column: span 2; }
+      .radio-cards { grid-template-columns: repeat(2, 1fr); }
+      .comp-breakdown { grid-template-columns: 1fr; }
+      .timeline-card { grid-column: span 1; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 24px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full-width { grid-column: span 1; }
+      .radio-cards { grid-template-columns: 1fr; }
+      .comp-range { flex-wrap: wrap; gap: 20px; }
+      .timeline-visual { flex-direction: column; }
+      .timeline-phase { border-radius: var(--radius-md) !important; }
+      .timeline-phase::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-text">Loop<span>hire</span></div>
+        <div class="logo-subtitle">Talent Intelligence</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="loophire-dashboard-v2.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="#" class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Comp Benchmarking
+        </a>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Role Difficulty
+        </a>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Retention Radar
+        </a>
+        <a href="#" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          Role Tracker
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="tier-badge">Advantage</div>
+        <div class="tier-name">Demo Insurance Agency</div>
+        <div class="tier-price">$597/mo</div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="tool-header">
+        <div>
+          <a href="loophire-dashboard-v2.html" class="back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to Dashboard
+          </a>
+          <div class="tool-title-area">
+            <div class="tool-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div>
+              <h1 class="page-title">Comp Benchmarking</h1>
+              <p class="page-subtitle">Get real-time market compensation data for Commercial Lines Producers</p>
+            </div>
+          </div>
+        </div>
+        <div class="confidence-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          High Confidence Data
+        </div>
+      </header>
+
+      <!-- Input Form Section -->
+      <div class="form-section">
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label">Search Role</label>
+          <div class="search-input-wrapper">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="form-input search-input" placeholder="e.g., Commercial Lines Producer, Account Manager, CSR..." value="Commercial Lines Producer">
+          </div>
+          <div class="search-suggestions">
+            <span class="suggestion-chip">Commercial Lines Producer</span>
+            <span class="suggestion-chip">Personal Lines Producer</span>
+            <span class="suggestion-chip">Account Manager</span>
+            <span class="suggestion-chip">CSR - Commercial</span>
+            <span class="suggestion-chip">CSR - Personal</span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Market / Metro Area</label>
+            <select class="form-select">
+              <option>Phoenix Metro, AZ</option>
+              <option>Tucson, AZ</option>
+              <option>Denver Metro, CO</option>
+              <option>Dallas-Fort Worth, TX</option>
+              <option>Houston, TX</option>
+              <option>Los Angeles, CA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Years of Experience</label>
+            <select class="form-select">
+              <option>0-2 years (New Producer)</option>
+              <option selected>3-7 years (Experienced)</option>
+              <option>8+ years (Senior)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Commercial Focus</label>
+            <select class="form-select">
+              <option selected>General Commercial</option>
+              <option>Construction / Contractors</option>
+              <option>Manufacturing</option>
+              <option>Transportation / Trucking</option>
+              <option>Professional Services</option>
+              <option>Healthcare / Medical</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <label class="form-label" style="margin-bottom: 12px; display: block;">Producer Scenario</label>
+          <div class="radio-cards">
+            <label class="radio-card selected">
+              <input type="radio" name="scenario" checked>
+              <div class="radio-card-title">Book Builder</div>
+              <div class="radio-card-desc">Starting fresh, cannot bring existing book (non-compete)</div>
+              <div class="check-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="scenario">
+              <div class="radio-card-title">Book Bringer</div>
+              <div class="radio-card-desc">Bringing portable book (no non-compete)</div>
+              <div class="check-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="scenario">
+              <div class="radio-card-title">Agency Book Purchase</div>
+              <div class="radio-card-desc">Agency acquiring book for producer (rare)</div>
+              <div class="check-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+          <button class="btn btn-secondary">Reset</button>
+          <button class="btn btn-primary" onclick="document.querySelector('.results-section').classList.add('visible'); this.closest('.form-section').style.display='none';">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            Run Benchmark
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Section (Hidden initially) -->
+      <div class="results-section visible">
+        <div class="results-header">
+          <h2 class="results-title">Benchmark Results</h2>
+          <div class="results-actions">
+            <button class="btn btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export PDF
+            </button>
+            <button class="btn btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Modify Inputs
+            </button>
+          </div>
+        </div>
+
+        <!-- Comp Summary -->
+        <div class="comp-summary">
+          <div class="comp-summary-header">
+            <div>
+              <div class="comp-summary-title">Market Compensation Range</div>
+              <div class="comp-summary-role">Commercial Lines Producer (Book Builder)</div>
+              <div class="comp-summary-meta">
+                <span>Phoenix Metro, AZ</span>
+                <span>3-7 Years Experience</span>
+                <span>General Commercial</span>
+              </div>
+            </div>
+            <span class="badge badge-success">Verified Data</span>
+          </div>
+
+          <div class="comp-range">
+            <div class="comp-range-item">
+              <div class="comp-range-label">25th Percentile</div>
+              <div class="comp-range-value">$70K</div>
+            </div>
+            <div class="comp-range-item highlight">
+              <div class="comp-range-label">Median (50th)</div>
+              <div class="comp-range-value">$88K</div>
+            </div>
+            <div class="comp-range-item">
+              <div class="comp-range-label">75th Percentile</div>
+              <div class="comp-range-value">$110K</div>
+            </div>
+            <div class="comp-range-item">
+              <div class="comp-range-label">Top Performer</div>
+              <div class="comp-range-value">$150K+</div>
+            </div>
+          </div>
+
+          <div class="comp-visual-bar">
+            <div class="range-labels">
+              <span>Entry Level</span>
+              <span>Market Rate</span>
+              <span>Premium Talent</span>
+            </div>
+            <div class="range-bar-container">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker p25"></div>
+              <div class="range-marker p50"></div>
+              <div class="range-marker p75"></div>
+            </div>
+            <div class="range-labels">
+              <span>$55K</span>
+              <span>Year 1 Total Comp</span>
+              <span>$150K+</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comp Breakdown -->
+        <div class="comp-breakdown">
+          <!-- Base + Commission Structure -->
+          <div class="breakdown-card">
+            <div class="breakdown-card-header">
+              <h4 class="breakdown-card-title">Compensation Structure</h4>
+              <span class="badge badge-teal">Book Builder</span>
+            </div>
+            <table class="breakdown-table">
+              <tr>
+                <td>Base Salary</td>
+                <td>$50,000 - $75,000</td>
+              </tr>
+              <tr>
+                <td>New Business Commission</td>
+                <td>40-50%</td>
+              </tr>
+              <tr>
+                <td>Renewal Commission</td>
+                <td>25-30% (post-validation)</td>
+              </tr>
+              <tr>
+                <td>Signing Bonus</td>
+                <td>$0 - $15,000</td>
+              </tr>
+              <tr class="highlight">
+                <td>Year 1 Expected Total</td>
+                <td>$70,000 - $110,000</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Production Expectations -->
+          <div class="breakdown-card">
+            <div class="breakdown-card-header">
+              <h4 class="breakdown-card-title">Production Expectations</h4>
+              <span class="badge badge-warning">Key Metrics</span>
+            </div>
+            <table class="breakdown-table">
+              <tr>
+                <td>Year 1 Premium Target</td>
+                <td>$150K - $250K</td>
+              </tr>
+              <tr>
+                <td>Year 1 Commission (Est.)</td>
+                <td>$30K - $50K</td>
+              </tr>
+              <tr>
+                <td>Break-Even Timeline</td>
+                <td>18-30 months</td>
+              </tr>
+              <tr>
+                <td>Validation Period</td>
+                <td>12-18 months</td>
+              </tr>
+              <tr class="highlight">
+                <td>Sustainable Book Size</td>
+                <td>$500K+ premium (3-5 yrs)</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Producer Timeline -->
+          <div class="breakdown-card timeline-card">
+            <div class="breakdown-card-header">
+              <h4 class="breakdown-card-title">Book Builder Timeline to Profitability</h4>
+              <span class="badge badge-coral">Critical Insight</span>
+            </div>
+            <div class="timeline-visual">
+              <div class="timeline-phase active">
+                <div class="timeline-phase-label">Year 1</div>
+                <div class="timeline-phase-title">Ramp-Up</div>
+                <div class="timeline-phase-detail">Heavy investment, learning carriers</div>
+                <div class="timeline-phase-value">-$20K to -$40K</div>
+              </div>
+              <div class="timeline-phase">
+                <div class="timeline-phase-label">Year 2</div>
+                <div class="timeline-phase-title">Building</div>
+                <div class="timeline-phase-detail">First renewals, expanding pipeline</div>
+                <div class="timeline-phase-value">-$10K to Break-Even</div>
+              </div>
+              <div class="timeline-phase">
+                <div class="timeline-phase-label">Year 3</div>
+                <div class="timeline-phase-title">Validation</div>
+                <div class="timeline-phase-detail">Proving sustainability</div>
+                <div class="timeline-phase-value">Break-Even to +$20K</div>
+              </div>
+              <div class="timeline-phase">
+                <div class="timeline-phase-label">Year 4-5</div>
+                <div class="timeline-phase-title">Profitable</div>
+                <div class="timeline-phase-detail">Mature book, strong renewals</div>
+                <div class="timeline-phase-value">+$40K to +$80K</div>
+              </div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--gray-medium); text-align: center;">Net agency position (producer comp minus revenue generated). Most agencies invest $60K-$100K before break-even.</p>
+          </div>
+        </div>
+
+        <!-- Market Insights -->
+        <div class="insights-card">
+          <div class="insights-card-header">
+            <h4 class="insights-card-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              Market Insights for Phoenix Metro
+            </h4>
+          </div>
+
+          <div class="insight-item">
+            <div class="insight-icon success">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            </div>
+            <div class="insight-content">
+              <div class="insight-title">Market Comp Trending Up 6.2% YoY</div>
+              <div class="insight-desc">Phoenix commercial producer compensation has increased faster than national average (4.1%). Competition for proven producers is driving base salaries higher.</div>
+            </div>
+          </div>
+
+          <div class="insight-item">
+            <div class="insight-icon warning">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="insight-content">
+              <div class="insight-title">Non-Compete Enforcement Strong in AZ</div>
+              <div class="insight-desc">Arizona courts have consistently upheld 2-year non-compete agreements. Expect candidates to be true "book builders" - plan for 3-5 year investment timeline.</div>
+            </div>
+          </div>
+
+          <div class="insight-item">
+            <div class="insight-icon info">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </div>
+            <div class="insight-content">
+              <div class="insight-title">Salary vs. Draw Shifting to Salary</div>
+              <div class="insight-desc">72% of Phoenix agencies now offer base salary (vs. draw) to attract younger producers. Those still using draw-only are losing candidates to salary-based competitors.</div>
+            </div>
+          </div>
+
+          <div class="insight-item">
+            <div class="insight-icon success">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="insight-content">
+              <div class="insight-title">Your Offer is Competitive</div>
+              <div class="insight-desc">At $60K base + 45% new business, your comp structure lands at the 55th percentile for experienced book builders. Consider adding signing bonus for top-tier candidates.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Banner -->
+        <div class="cta-banner">
+          <div class="cta-content">
+            <div class="cta-title">Need help finding a Commercial Producer?</div>
+            <div class="cta-desc">Our team specializes in insurance producer recruitment with a 97.6% retention guarantee.</div>
+          </div>
+          <a href="#" class="btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Talk to a Recruiter
+          </a>
+        </div>
+
+        <!-- Data Source -->
+        <div class="data-source">
+          <div class="data-source-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>47 verified placements in Phoenix Metro</span>
+          </div>
+          <div class="data-source-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Data updated: Jan 8, 2026</span>
+          </div>
+          <div class="data-source-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Confidence: High (proprietary + market data)</span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Radio card selection
+    document.querySelectorAll('.radio-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+      });
+    });
+
+    // Suggestion chip click to populate search
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelector('.search-input').value = this.textContent;
+        document.querySelector('.search-input').focus();
+      });
+    });
+  </script>
+</body>
+</html>
